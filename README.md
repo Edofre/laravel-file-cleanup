@@ -18,16 +18,6 @@ or add
 
 to the ```require``` section of your `composer.json` file.
 
-## Configuration
-
-Add the console command to the $commands array in your /app/Console/Kernel.php
-```php
-protected $commands = [
-        \Edofre\FileCleanup\FileCleanup::class,
-    ];
-
-```
-
 ## Example command
 
 The following command will remove files older than {days} in the specified {directory} 
