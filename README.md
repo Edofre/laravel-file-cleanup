@@ -34,4 +34,4 @@ composer test
 
 ## Feature requests
 
-* ?
+* Different disks
