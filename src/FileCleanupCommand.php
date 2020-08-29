@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 class FileCleanupCommand extends Command
 {
     /** @var string */
-    protected $signature = 'cleanup:files {directory} {days=14}';
+    protected $signature = 'cleanup:files {directory} {days=14} {disk=local}';
     /** @var string */
     protected $description = 'Delete all your old files from storage';
 
@@ -21,15 +21,16 @@ class FileCleanupCommand extends Command
     {
         $deletedFiles = 0;
 
-        // Get the playlist from the CLI arguments
+        // Get all the arguments
         $directory = $this->argument('directory');
         $days = $this->argument('days');
+        $disk = $this->argument('disk');
 
-        // Get the cut off date
+        // Get the cut off date, files <= than this will be deleted
         $time = Carbon::now()->subDays($days)->timestamp;
 
-        if (Storage::disk('local')->has($directory)) {
-            $allFiles = Storage::disk('local')->files($directory);
+        if (Storage::disk($disk)->has($directory)) {
+            $allFiles = Storage::disk($disk)->files($directory);
             foreach ($allFiles as $file) {
                 if (Storage::lastModified($file) <= $time) {
                     Storage::delete($file);
