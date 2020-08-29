@@ -3,12 +3,13 @@
 namespace Edofre\FileCleanup;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class FileCleanupCommand extends Command
 {
     /** @var string */
-    protected $signature = 'cleanup:files {directory : The name of the model you want to delete} {days : Files older than this amount of days are deleted}';
+    protected $signature = 'cleanup:files {directory} {days=14}';
     /** @var string */
     protected $description = 'Delete all your old files from storage';
 
@@ -18,23 +19,27 @@ class FileCleanupCommand extends Command
      */
     public function handle()
     {
+        $deletedFiles = 0;
+
         // Get the playlist from the CLI arguments
         $directory = $this->argument('directory');
         $days = $this->argument('days');
 
-        var_dump($directory, $days);
+        // Get the cut off date
+        $time = Carbon::now()->subDays($days)->timestamp;
 
         if (Storage::disk('local')->has($directory)) {
             $allFiles = Storage::disk('local')->files($directory);
-            var_dump($allFiles);
+            foreach ($allFiles as $file) {
+                if (Storage::lastModified($file) <= $time) {
+                    Storage::delete($file);
+                    $deletedFiles++;
+                }
+            }
         } else {
             $this->error("Directory '{$directory}' not found.");
         }
 
-        // $time = Storage::lastModified($file);
-        // Storage::delete(['file.jpg', 'file2.jpg']);
-
-        // $this->info("$this->item_count items deleted");
-        // $this->error("Class not found in system");
+        $this->info("$deletedFiles items deleted");
     }
 }
