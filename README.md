@@ -20,18 +20,11 @@ to the ```require``` section of your `composer.json` file.
 
 ## Example command
 
-The following command will remove files older than {days} in the specified {directory} 
+The following command will remove files older than {days} in the specified {directory} from your {disk} 
 ```
-php artisan db:file-cleanup {directory} {days}
-```
-
-## Tests
-
-Run the tests by executing the following command:
-```
-composer test
+php artisan db:file-cleanup {directory} {days=14} {disk=local}
 ```
 
 ## Feature requests
 
-* Different disks
+* Tests
